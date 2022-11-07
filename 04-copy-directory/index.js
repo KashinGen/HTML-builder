@@ -4,7 +4,7 @@ const source = path.join(__dirname, 'files');
 const destination = path.join(__dirname, 'files-copy');
 
 
-const copyDir = async () => {
+const copyDir = async (source, destination) => {
   try {
     await fs.rm(destination, { recursive: true, force: true });
     await fs.mkdir(destination, { recursive: true });
@@ -20,4 +20,6 @@ const copyDir = async () => {
   }
 };
 
-copyDir()
+copyDir(source, destination)
+
+module.exports = {copyDir}
