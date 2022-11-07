@@ -6,7 +6,7 @@ const destination = path.join(__dirname,'project-dist' )
 
 
 
-const mergeStyles = () => {
+const mergeStyles = (source, destination) => {
     try {
         fs.promises.readdir(source, {withFileTypes: true}).then(files => {
             const writableStream = fs.createWriteStream(path.join(destination, 'bundle.css'));
@@ -15,7 +15,7 @@ const mergeStyles = () => {
               const name = path.basename(filePath);
               const extension = path.extname(filePath);
           
-              if (extension == '.css') {
+              if (file.isFile() && extension == '.css') {
                 const readableStream = fs.createReadStream(path.join(source, name));
                 readableStream.on('data', data => {
                   writableStream.write(data + '\n');
@@ -28,4 +28,7 @@ const mergeStyles = () => {
     }
 }
 
-mergeStyles()
+mergeStyles(source, destination)
+
+
+module.exports = {mergeStyles}
