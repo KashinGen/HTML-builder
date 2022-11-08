@@ -68,7 +68,7 @@ const buildHtmlFromTemplates = async () => {
     await clearDir()
     await createDir()
     await copyDirectory(assetsSource, assetsDestination)
-    await mergeStyles(stylesSource, stylesDestination)
+    await mergeStyles(stylesSource, stylesDestination, 'style.css')
     await buildHtmlFromTemplates()
     return true
   }
