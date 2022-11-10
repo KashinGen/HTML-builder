@@ -1,7 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const {mergeStyles} = require('../05-merge-styles')
-const {copyDir} = require('../04-copy-directory')
 const destination = path.join(__dirname, 'project-dist')
 const stylesSource = path.join(__dirname, 'styles');
 const stylesDestination = path.join(destination);
@@ -24,6 +22,43 @@ const createDir =  async () => {
         console.log(e.message);
     }
 }
+
+const mergeStyles = (source, destination, filename) => {
+    try {
+        fs.promises.readdir(source, {withFileTypes: true, flags: 'a'}).then(files => {
+            const writableStream = fs.createWriteStream(path.join(destination, filename));
+            files.forEach(file => {
+              const filePath = path.join(source, file.name);
+              const name = path.basename(filePath);
+              const extension = path.extname(filePath);
+          
+              if (file.isFile() && extension == '.css') {
+                const readableStream = fs.createReadStream(path.join(source, name));
+                readableStream.pipe(writableStream);
+              }
+            });
+          });
+    } catch (e) {
+        console.log(e.message);
+    }
+}
+
+const copyDir = async (source, destination) => {
+    try {
+      await fs.promises.rm(destination, { recursive: true, force: true },() => {});
+      await fs.promises.mkdir(destination, { recursive: true });
+      const files = await fs.promises.readdir(source);
+  
+      for (let file of files) {
+        const sourceFile = path.join(source, file);
+        const destinationFile = path.join(destination, file);
+        await fs.promises.copyFile(sourceFile, destinationFile);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  
 
 const copyDirectory = async (assetsSource, assetsDestination) => {
     try {
